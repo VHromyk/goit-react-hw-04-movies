@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  margin-top: 80px;
+}
+.image {
+  margin-right: 60px;
+}
+.title {
+  font-size: 35px;
+}
+.raiting {
+  font-size: 20px;
+  font-weight: 600;
+}
+.overview {
+  font-size: 18px;
+}
+.button {
+  text-decoration: none;
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+
+  &:hover {
+    color: orange;
+    background-color: black;
+    transition: 400ms;
+  }
+}
