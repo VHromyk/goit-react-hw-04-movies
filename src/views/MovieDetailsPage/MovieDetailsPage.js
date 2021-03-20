@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
 import styles from './MoviesDetailsPage.module.scss';
 import { Route, NavLink } from 'react-router-dom';
 import Cast from '../../components/Cast/Cast';
 import Reviews from '../../components/Reviews/Reviews';
+import routes from '../../routes';
+import api from '../../api';
 
 class MovieDetailsPage extends Component {
   state = {
@@ -15,16 +16,23 @@ class MovieDetailsPage extends Component {
   };
 
   async componentDidMount() {
-    const API_KEY = 'bf08c0c07642287cbabe383c02818eb3';
     const { movieId } = this.props.match.params;
 
-    const response = await Axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`,
+    await api.fetchMoviesDetailsPage(movieId).then(response =>
+      this.setState({
+        ...response.data,
+      }),
     );
-    this.setState({
-      ...response.data,
-    });
   }
+
+  handleGoBack = () => {
+    const { location, history } = this.props;
+    if (location.state && location.state.from) {
+      history.push(location.state.from);
+      return;
+    }
+    history.push(routes.home);
+  };
 
   render() {
     const {
@@ -38,6 +46,13 @@ class MovieDetailsPage extends Component {
     const { url, path } = this.props.match;
     return (
       <>
+        <button
+          className={styles.button}
+          type="button"
+          onClick={this.handleGoBack}
+        >
+          Back to movies
+        </button>
         <div className={styles.container}>
           <div className={styles.image}>
             <img

@@ -1,0 +1,22 @@
+.title {
+  text-align: center;
+  font-size: 35px;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 80px;
+}
+.item {
+  list-style: none;
+  margin: 20px;
+  width: 200px;
+}
+
+.character {
+  white-space: wrap;
+}
+.image {
+  border-radius: 5px;
+}

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
+import api from '../../api';
+
+import styles from './Review.module.scss';
 
 class Reviews extends Component {
   state = {
@@ -7,28 +9,30 @@ class Reviews extends Component {
   };
 
   async componentDidMount() {
-    const API_KEY = 'bf08c0c07642287cbabe383c02818eb3';
     const { movieId } = this.props.match.params;
 
-    const response = await Axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}`,
+    await api.fetchReviews(movieId).then(response =>
+      this.setState({
+        results: response.data.results,
+      }),
     );
-    this.setState({
-      results: response.data.results,
-    });
-    console.log(response);
   }
 
   render() {
     const { results } = this.state;
-    console.log(this.state);
     return (
       <>
-        <h2>Review</h2>
+        {results.length > 0 ? (
+          <h2 className={styles.title}>Review</h2>
+        ) : (
+          <h2 className={styles.title}>There are no reviews for this film!</h2>
+        )}
 
         <ul>
           {results.map(result => (
-            <li key={result.author}>{result.content}</li>
+            <li className={styles.item} key={result.author}>
+              {result.content}
+            </li>
           ))}
         </ul>
       </>

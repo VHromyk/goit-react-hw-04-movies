@@ -1,32 +1,27 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
-import MoviesPage from '../MoviesPage';
+import MoviesList from '../../components/MovieList/MoviesList';
 import styles from './HomePage.module.scss';
+import api from '../../api';
 
 class HomePage extends Component {
   state = {
-    films: [],
+    movies: [],
   };
 
   async componentDidMount() {
-    const API_KEY = 'bf08c0c07642287cbabe383c02818eb3';
-
-    const response = await Axios.get(
-      `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`,
+    await api.fetchTrendingMovies().then(response =>
+      this.setState({
+        movies: response.data.results,
+      }),
     );
-
-    console.log(response.data.results);
-    this.setState({
-      films: response.data.results,
-    });
   }
 
   render() {
-    const { films } = this.state;
+    const { movies } = this.state;
     return (
       <>
-        <h1 className={styles.title}>Tranding films</h1>
-        <MoviesPage films={films} url={this.props.match.url} />
+        <h1 className={styles.title}>Tranding movies</h1>
+        <MoviesList movies={movies} />
       </>
     );
   }

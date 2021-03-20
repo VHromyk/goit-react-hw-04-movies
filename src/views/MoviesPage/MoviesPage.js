@@ -1,34 +1,61 @@
 import React, { Component } from 'react';
+import api from '../../api';
+import MoviesList from '../../components/MovieList/MoviesList';
 import styles from './MoviesPage.module.scss';
-import { Link } from 'react-router-dom';
 
 class MoviesPage extends Component {
-  onClickHandler = id => {
-    console.log(id);
+  state = {
+    movies: [],
+    query: '',
+  };
+
+  changeValue = event => {
+    this.setState({
+      query: event.currentTarget.value,
+    });
+  };
+
+  submitHandler = event => {
+    event.preventDefault();
+    this.movieSearch();
+    this.resetForm();
+  };
+
+  movieSearch = () => {
+    const { query } = this.state;
+
+    api.fetchMoviesPage(query).then(response =>
+      this.setState({
+        movies: response.data.results,
+      }),
+    );
+  };
+
+  resetForm = () => {
+    this.setState({
+      query: '',
+    });
   };
 
   render() {
-    const { films, url } = this.props;
+    const { movies, query } = this.state;
+    const { history } = this.props;
+
     return (
-      <ul className={styles.list}>
-        {films.map(({ id, title, backdrop_path, release_date }) => (
-          <li
-            key={id}
-            className={styles.item}
-            onClick={() => this.onClickHandler(id)}
-          >
-            <Link to={`${url}movies/${id}`}>
-              <img
-                width="370"
-                src={`https://image.tmdb.org/t/p/w500${backdrop_path}`}
-              ></img>
-              <h2 className={styles.title}>
-                {title} ({release_date.slice(0, 4)})
-              </h2>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <>
+        <form className={styles.form} onSubmit={this.submitHandler}>
+          <input
+            className={styles.input}
+            value={query}
+            placeholder="Type movie..."
+            onChange={this.changeValue}
+          ></input>
+          <button className={styles.button} type="submit">
+            Search movie
+          </button>
+        </form>
+        <MoviesList movies={movies} />
+      </>
     );
   }
 }

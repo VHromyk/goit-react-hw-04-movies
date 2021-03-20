@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
+import avatar from '../../image/avatar.jpg';
+import styles from './Cast.module.scss';
+import api from '../../api';
 
 class Cast extends Component {
   state = {
@@ -7,29 +9,36 @@ class Cast extends Component {
   };
 
   async componentDidMount() {
-    const API_KEY = 'bf08c0c07642287cbabe383c02818eb3';
     const { movieId } = this.props.match.params;
-
-    const response = await Axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`,
+    await api.fetchCast(movieId).then(response =>
+      this.setState({
+        cast: response.data.cast,
+      }),
     );
-    this.setState({
-      cast: response.data.cast,
-    });
   }
   render() {
     const { cast } = this.state;
-
     return (
-      <ul>
-        {cast.map(({ name, cast_id, profile_path, character }) => (
-          <li key={cast_id}>
-            <img src={`https://image.tmdb.org/t/p/w200${profile_path}`}></img>
-            <p>Name:{name}</p>
-            <p>Character:{character}</p>
-          </li>
-        ))}
-      </ul>
+      <>
+        <h2 className={styles.title}>Cast</h2>
+        <ul className={styles.list}>
+          {cast.map(({ name, cast_id, profile_path, character }) => (
+            <li key={cast_id} className={styles.item}>
+              {profile_path ? (
+                <img
+                  className={styles.image}
+                  src={`https://image.tmdb.org/t/p/w200${profile_path}`}
+                />
+              ) : (
+                <img src={avatar} width="200" />
+              )}
+
+              <p>Name: {name}</p>
+              <p className={styles.character}>Character: {character}</p>
+            </li>
+          ))}
+        </ul>
+      </>
     );
   }
 }
